@@ -10,6 +10,7 @@ import ru.koregin.fermaclient.model.Task;
 import ru.koregin.fermaclient.model.User;
 
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,11 @@ public class RestClient implements Store {
         JSONObject taskJsonObject = new JSONObject();
         taskJsonObject.put("name", task.getName());
         HttpEntity<String> request = new HttpEntity<>(taskJsonObject.toString(), headers);
-        return restTemplate.postForObject(TASK_API, request, Task.class);
+        Task createdTask = restTemplate.postForObject(TASK_API, request, Task.class);
+        if (createdTask != null && createdTask.getCreated() != null) {
+            createdTask.setCreated(createdTask.getCreated().withZoneSameInstant(ZoneId.of("Europe/Moscow")));
+        }
+        return createdTask;
     }
 
     @Override
@@ -50,6 +55,12 @@ public class RestClient implements Store {
                     });
             if (responseEntity.hasBody()) {
                 task = responseEntity.getBody();
+                if (task != null && task.getCreated() != null) {
+                    task.setCreated(task.getCreated().withZoneSameInstant(ZoneId.of("Europe/Moscow")));
+                }
+                if (task != null && task.getCompleted() != null) {
+                    task.setCompleted(task.getCompleted().withZoneSameInstant(ZoneId.of("Europe/Moscow")));
+                }
             }
         } catch (RestClientException e) {
             e.printStackTrace();

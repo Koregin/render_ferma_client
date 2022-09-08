@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @Data
 public class Task {
     private Long id;
     private String name;
     private String status;
-    private LocalDateTime created;
-    private LocalDateTime completed;
+    private ZonedDateTime created;
+    private ZonedDateTime completed;
 
     public Task(String name) {
         this.name = name;
@@ -22,8 +23,8 @@ public class Task {
     public Task(@JsonProperty("id") Long id,
                 @JsonProperty("name") String name,
                 @JsonProperty("status") String status,
-                @JsonProperty("created") LocalDateTime created,
-                @JsonProperty("completed") LocalDateTime completed) {
+                @JsonProperty("created") ZonedDateTime created,
+                @JsonProperty("completed") ZonedDateTime completed) {
         this.id = id;
         this.name = name;
         this.status = status;
